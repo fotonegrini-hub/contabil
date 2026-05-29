@@ -303,6 +303,22 @@ tr.proxima{
     background:rgba(250,204,21,.18);
 }
 
+
+.btn-pago{
+    background:#475569;
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    padding:10px;
+    font-weight:700;
+}
+.btn-pago.ativo{
+    background:#16a34a;
+}
+tr.paga{
+    background:rgba(34,197,94,.15);
+}
+
 </style>
 </head>
 
@@ -342,6 +358,7 @@ tr.proxima{
                     <th>Valor Devido</th>
                     <th>Saldo Final</th>
                     <th>Vencimento</th>
+                    <th>PAGO</th>
                     <th>Ação</th>
                 </tr>
             </thead>
@@ -456,6 +473,10 @@ function addRow(data={}){
             value="${data.vencimento || ''}">
         </td>
         <td>
+            <button class="btn-pago ${data.pago ? 'ativo' : ''}"
+            onclick="togglePago(this)">PAGO</button>
+        </td>
+        <td>
             <button class="remove-btn"
             onclick="removeRow(this)">
                 ✕
@@ -530,7 +551,8 @@ function saveData(){
             conta: tr.querySelector('.conta').value,
             tenho: tr.querySelector('.tenho').value,
             devido: tr.querySelector('.devido').value,
-            vencimento: tr.querySelector('.vencimento').value
+            vencimento: tr.querySelector('.vencimento').value,
+            pago: tr.querySelector('.btn-pago')?.classList.contains('ativo')
         });
     });
     localStorage.setItem('dnContabil', JSON.stringify(rows));
@@ -651,6 +673,36 @@ function ordenarPorVencimento(){
             tr.classList.add('proxima');
         }
     });
+}
+
+
+
+function togglePago(btn){
+    const tr = btn.closest('tr');
+
+    if(btn.classList.contains('ativo')){
+        btn.classList.remove('ativo');
+        tr.classList.remove('paga');
+    }else{
+        const tenhoInput = tr.querySelector('.tenho');
+        const devidoInput = tr.querySelector('.devido');
+
+        const tenho = parseFloat(tenhoInput.value) || 0;
+        const devido = parseFloat(devidoInput.value) || 0;
+        const saldo = tenho - devido;
+
+        tenhoInput.value = saldo.toFixed(2);
+        devidoInput.value = 0;
+        tr.querySelector('.vencimento').value = '';
+
+        btn.classList.add('ativo');
+        tr.classList.add('paga');
+
+        document.getElementById('tbody').appendChild(tr);
+    }
+
+    updateTotals();
+    saveData();
 }
 
 
