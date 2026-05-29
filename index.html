@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="theme-color" content="#0f172a">
+<title>DN Contábil - Controle Financeiro</title>
+
+<style>
+:root{
+    --bg:#0f172a;
+    --card:#111827;
+    --card2:#1e293b;
+    --primary:#22c55e;
+    --danger:#ef4444;
+    --text:#f8fafc;
+    --muted:#94a3b8;
+    --border:#334155;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+
+body{
+    background:linear-gradient(180deg,#020617,#0f172a);
+    color:var(--text);
+    min-height:100vh;
+    padding:14px;
+}
+
+.container{
+    max-width:1400px;
+    margin:auto;
+}
+
+.header{
+    background:rgba(17,24,39,.95);
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:18px;
+    margin-bottom:18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    backdrop-filter:blur(10px);
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo-icon{
+    width:48px;
+    height:48px;
+    border-radius:14px;
+    background:linear-gradient(135deg,#22c55e,#16a34a);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.title h1{
+    font-size:1.3rem;
+}
+
+.title p{
+    color:var(--muted);
+    font-size:.9rem;
+}
+
+.date{
+    font-size:.9rem;
+    color:#cbd5e1;
+    background:rgba(34,197,94,.1);
+    padding:8px 12px;
+    border-radius:12px;
+}
+
+.top-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+}
+
+button{
+    border:none;
+    cursor:pointer;
+    transition:.2s;
+    font-weight:600;
+}
+
+.btn{
+    background:var(--card);
+    border:1px solid var(--border);
+    color:white;
+    padding:12px 16px;
+    border-radius:14px;
+    font-size:.95rem;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+    filter:brightness(1.1);
+}
+
+.btn-green{
+    background:linear-gradient(135deg,#22c55e,#15803d);
+}
+
+.btn-red{
+    background:linear-gradient(135deg,#ef4444,#b91c1c);
+}
+
+.table-wrap{
+    overflow:auto;
+    border-radius:22px;
+    border:1px solid var(--border);
+    background:rgba(15,23,42,.95);
+}
+
+table{
+    width:100%;
+    min-width:1100px;
+    border-collapse:collapse;
+}
+
+thead{
+    background:#111827;
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+
+th{
+    padding:16px 10px;
+    text-align:left;
+    color:#cbd5e1;
+    font-size:.9rem;
+    border-bottom:1px solid var(--border);
+}
+
+td{
+    padding:10px;
+    border-bottom:1px solid rgba(51,65,85,.6);
+}
+
+input, select{
+    width:100%;
+    background:#0f172a;
+    border:1px solid #334155;
+    color:white;
+    padding:12px;
+    border-radius:12px;
+    outline:none;
+    font-size:.95rem;
+}
+
+input:focus, select:focus{
+    border-color:#22c55e;
+    box-shadow:0 0 0 3px rgba(34,197,94,.15);
+}
+
+.money{
+    position:relative;
+}
+
+.money span{
+    position:absolute;
+    left:12px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#94a3b8;
+    font-size:.92rem;
+}
+
+.money input{
+    padding-left:40px;
+}
+
+.total-cell{
+    font-weight:700;
+    color:#22c55e;
+    font-size:1rem;
+}
+
+.remove-btn{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:#7f1d1d;
+    color:white;
+    font-size:18px;
+    transition:.2s;
+}
+
+.remove-btn:hover{
+    background:#991b1b;
+    transform:scale(1.05);
+}
+
+.summary{
+    margin-top:20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:14px;
+}
+
+.card{
+    background:rgba(17,24,39,.95);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:20px;
+    transition:.2s;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+    border-color:#22c55e;
+}
+
+.card h3{
+    color:#94a3b8;
+    font-size:.92rem;
+    margin-bottom:10px;
+}
+
+.big{
+    font-size:1.6rem;
+    font-weight:800;
+}
+
+.green{
+    color:#22c55e;
+}
+
+.red{
+    color:#ef4444;
+}
+
+.footer{
+    text-align:center;
+    margin-top:18px;
+    color:#64748b;
+    font-size:.85rem;
+    padding:12px;
+}
+
+@media(max-width:768px){
+
+    body{
+        padding:10px;
+    }
+
+    .header{
+        padding:15px;
+    }
+
+    .title h1{
+        font-size:1.1rem;
+    }
+
+    .btn{
+        flex:1;
+        text-align:center;
+    }
+    
+    .card .big{
+        font-size:1.3rem;
+    }
+}
+
+/* Animações */
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+#tbody tr{
+    animation:fadeIn .3s ease;
+}
+
+tr.vencida{
+    background:rgba(239,68,68,.18);
+}
+tr.proxima{
+    background:rgba(250,204,21,.18);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">💰</div>
+            <div class="title">
+                <h1>DN Contábil</h1>
+                <p>Controle Financeiro Inteligente</p>
+            </div>
+        </div>
+        <div class="date" id="dataHoje"></div>
+    </div>
+
+    <div class="top-actions">
+        <button class="btn btn-green" onclick="addRow()">
+            ➕ Adicionar Linha
+        </button>
+        <button class="btn" onclick="shareData()">
+            📤 Compartilhar
+        </button>
+        <button class="btn btn-red" onclick="clearAll()">
+            🗑 Limpar Tudo
+        </button>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Conta</th>
+                    <th>Valor que Tenho</th>
+                    <th>Valor Devido</th>
+                    <th>Saldo Final</th>
+                    <th>Vencimento</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+        </table>
+    </div>
+
+    <div class="summary">
+        <div class="card">
+            <h3>💵 Total em Contas</h3>
+            <div class="big green" id="totalTenho">
+                R$ 0,00
+            </div>
+        </div>
+        <div class="card">
+            <h3>📉 Total de Dívidas</h3>
+            <div class="big red" id="totalDevido">
+                R$ 0,00
+            </div>
+        </div>
+        <div class="card">
+            <h3>📊 Saldo Geral</h3>
+            <div class="big" id="saldoFinal">
+                R$ 0,00
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        💾 Salva automaticamente • Dados no seu dispositivo • DN Contábil
+    </div>
+
+</div>
+
+<script>
+
+const contasPadrao = [
+    "Bradesco PJ",
+    "Bradesco Físico",
+    "Nubank PJ",
+    "Nubank Físico",
+    "Mercado Pago",
+    "PagSeguro",
+    "Itaú",
+    "Santander",
+    "Banco do Brasil",
+    "Caixa Econômica",
+    "Dinheiro Físico"
+];
+
+function formatMoney(value){
+    return Number(value || 0).toLocaleString('pt-BR', {
+        style:'currency',
+        currency:'BRL'
+    });
+}
+
+function getDate(){
+    const hoje = new Date();
+    const data = hoje.toLocaleDateString('pt-BR', {
+        day:'2-digit',
+        month:'long',
+        year:'numeric'
+    });
+    document.getElementById('dataHoje').innerHTML = "📅 " + data;
+}
+
+function createSelect(selected=''){
+    return `
+        <input list="contasList"
+        class="conta"
+        value="${selected.replace(/"/g, '&quot;')}"
+        placeholder="Digite ou escolha..."
+        autocomplete="off" />
+    `;
+}
+
+function addRow(data={}){
+    const tbody = document.getElementById('tbody');
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+        <td>
+            ${createSelect(data.conta || '')}
+        </td>
+        <td>
+            <div class="money">
+                <span>R$</span>
+                <input type="number"
+                step="0.01"
+                class="tenho"
+                value="${data.tenho || ''}"
+                placeholder="0,00">
+            </div>
+        </td>
+        <td>
+            <div class="money">
+                <span>R$</span>
+                <input type="number"
+                step="0.01"
+                class="devido"
+                value="${data.devido || ''}"
+                placeholder="0,00">
+            </div>
+        </td>
+        <td class="total-cell">
+            R$ 0,00
+        </td>
+        <td>
+            <input type="date"
+            class="vencimento"
+            value="${data.vencimento || ''}">
+        </td>
+        <td>
+            <button class="remove-btn"
+            onclick="removeRow(this)">
+                ✕
+            </button>
+        </td>
+    `;
+
+    tbody.appendChild(tr);
+    addListeners(tr);
+    updateTotals();
+    saveData();
+}
+
+function addListeners(tr){
+    tr.querySelectorAll('input').forEach(input=>{
+        input.addEventListener('input', ()=>{
+            updateTotals();
+            saveData();
+        });
+        input.addEventListener('change', ()=>{
+            saveData();
+            ordenarPorVencimento();
+        });
+    });
+}
+
+function removeRow(btn){
+    if(confirm('Remover esta conta?')){
+        btn.closest('tr').remove();
+        updateTotals();
+        saveData();
+    }
+}
+
+function updateTotals(){
+    let totalTenho = 0;
+    let totalDevido = 0;
+
+    document.querySelectorAll('#tbody tr').forEach(tr=>{
+        const tenho = parseFloat(tr.querySelector('.tenho').value) || 0;
+        const devido = parseFloat(tr.querySelector('.devido').value) || 0;
+        const saldo = tenho - devido;
+
+        totalTenho += tenho;
+        totalDevido += devido;
+
+        tr.querySelector('.total-cell').innerHTML = formatMoney(saldo);
+        
+        // Adiciona classe de cor ao saldo
+        const saldoCell = tr.querySelector('.total-cell');
+        if(saldo >= 0){
+            saldoCell.style.color = '#22c55e';
+        } else {
+            saldoCell.style.color = '#ef4444';
+        }
+    });
+
+    const saldoFinal = totalTenho - totalDevido;
+
+    document.getElementById('totalTenho').innerHTML = formatMoney(totalTenho);
+    document.getElementById('totalDevido').innerHTML = formatMoney(totalDevido);
+
+    const saldoEl = document.getElementById('saldoFinal');
+    saldoEl.innerHTML = formatMoney(saldoFinal);
+    saldoEl.className = 'big ' + (saldoFinal >= 0 ? 'green' : 'red');
+}
+
+function saveData(){
+    const rows = [];
+    document.querySelectorAll('#tbody tr').forEach(tr=>{
+        rows.push({
+            conta: tr.querySelector('.conta').value,
+            tenho: tr.querySelector('.tenho').value,
+            devido: tr.querySelector('.devido').value,
+            vencimento: tr.querySelector('.vencimento').value
+        });
+    });
+    localStorage.setItem('dnContabil', JSON.stringify(rows));
+}
+
+function loadData(){
+    const saved = JSON.parse(localStorage.getItem('dnContabil')) || [];
+    
+    if(saved.length > 0){
+        saved.forEach(item=>{
+            addRow(item);
+        });
+    }else{
+        // Adiciona 3 linhas vazias como exemplo
+        for(let i=0;i<3;i++){
+            addRow();
+        }
+    }
+}
+
+function clearAll(){
+    if(confirm('⚠️ ATENÇÃO: Isso irá apagar TODOS os dados!\n\nDeseja continuar?')){
+        localStorage.removeItem('dnContabil');
+        document.getElementById('tbody').innerHTML = '';
+        for(let i=0;i<3;i++){
+            addRow();
+        }
+        updateTotals();
+        alert('✅ Todos os dados foram limpos!');
+    }
+}
+
+async function shareData(){
+    let texto = '📊 **DN CONTÁBIL** 📊\n\n';
+    texto += `📅 ${new Date().toLocaleDateString('pt-BR')}\n\n`;
+    texto += '━─━─━─━─━─━─━─━─━\n\n';
+
+    let index = 1;
+    document.querySelectorAll('#tbody tr').forEach((tr)=>{
+        const conta = tr.querySelector('.conta').value || '—';
+        const tenho = parseFloat(tr.querySelector('.tenho').value) || 0;
+        const devido = parseFloat(tr.querySelector('.devido').value) || 0;
+        const vencimento = tr.querySelector('.vencimento').value || '—';
+        const saldo = tenho - devido;
+
+        texto += `${index}. ${conta}\n`;
+        texto += `   💵 Tenho: ${formatMoney(tenho)}\n`;
+        texto += `   📉 Devido: ${formatMoney(devido)}\n`;
+        texto += `   📊 Saldo: ${formatMoney(saldo)}\n`;
+        texto += `   📅 Vencimento: ${vencimento}\n\n`;
+        index++;
+    });
+
+    texto += '━─━─━─━─━─━─━─━─━\n\n';
+    texto += `💵 TOTAL EM CONTAS: ${document.getElementById('totalTenho').innerText}\n`;
+    texto += `📉 TOTAL DÍVIDAS: ${document.getElementById('totalDevido').innerText}\n`;
+    texto += `📊 SALDO GERAL: ${document.getElementById('saldoFinal').innerText}\n\n`;
+    texto += '💾 DN Contábil - Controle Financeiro';
+
+    if(navigator.share){
+        try {
+            await navigator.share({
+                title:'DN Contábil - Relatório Financeiro',
+                text:texto
+            });
+        } catch(err) {
+            if(err.name !== 'AbortError'){
+                copyToClipboard(texto);
+            }
+        }
+    }else{
+        copyToClipboard(texto);
+    }
+}
+
+function copyToClipboard(text){
+    navigator.clipboard.writeText(text).then(() => {
+        alert('📋 Relatório copiado para a área de transferência!');
+    }).catch(() => {
+        alert('❌ Não foi possível copiar o relatório.');
+    });
+}
+
+
+function ordenarPorVencimento(){
+
+    const tbody = document.getElementById('tbody');
+    const linhas = [...tbody.querySelectorAll('tr')];
+
+    linhas.sort((a,b)=>{
+
+        const da = a.querySelector('.vencimento').value || '9999-12-31';
+        const db = b.querySelector('.vencimento').value || '9999-12-31';
+
+        return new Date(da) - new Date(db);
+    });
+
+    linhas.forEach(linha=>tbody.appendChild(linha));
+
+    const hoje = new Date();
+    hoje.setHours(0,0,0,0);
+
+    linhas.forEach(tr=>{
+
+        tr.classList.remove('vencida','proxima');
+
+        const data = tr.querySelector('.vencimento').value;
+
+        if(!data) return;
+
+        const venc = new Date(data);
+        const dias = Math.ceil((venc-hoje)/(1000*60*60*24));
+
+        if(dias < 0){
+            tr.classList.add('vencida');
+        }
+        else if(dias <= 7){
+            tr.classList.add('proxima');
+        }
+    });
+}
+
+
+// Inicialização
+getDate();
+loadData();
+ordenarPorVencimento();
+
+// Atualiza a data a cada minuto (opcional)
+setInterval(getDate, 60000);
+
+</script>
+
+<datalist id="contasList">
+    <option value="Bradesco PJ">
+    <option value="Bradesco Físico">
+    <option value="Nubank PJ">
+    <option value="Nubank Físico">
+    <option value="Mercado Pago">
+    <option value="PagSeguro">
+    <option value="Itaú">
+    <option value="Santander">
+    <option value="Banco do Brasil">
+    <option value="Caixa Econômica">
+    <option value="Dinheiro Físico">
+    <option value="PicPay">
+    <option value="99Pay">
+</datalist>
+
+</body>
+</html>
